@@ -31,7 +31,7 @@ export default class XenQuotes extends Plugin {
 			});
 
 			if (this.ribbonIconEl) {
-				this.ribbonIconEl.addClass('my-plugin-ribbon-class');
+				this.ribbonIconEl.addClass('xenquotes-ribbon-class');
 			}
 		}
 
@@ -50,7 +50,7 @@ export default class XenQuotes extends Plugin {
 		});
 
 		// Add settings tab
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new XenQuotesSettingTab(this.app, this));
 	}
 
 	async fetchAndInsertQuote(view: MarkdownView) {
@@ -93,7 +93,7 @@ export default class XenQuotes extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class XenQuotesSettingTab extends PluginSettingTab {
 	plugin: XenQuotes;
 
 	constructor(app: App, plugin: XenQuotes) {
@@ -150,7 +150,7 @@ class SampleSettingTab extends PluginSettingTab {
 								}
 								await this.plugin.fetchAndInsertQuote(activeLeaf);
 							});
-							this.plugin.ribbonIconEl.addClass('my-plugin-ribbon-class');
+							this.plugin.ribbonIconEl.addClass('xenquotes-ribbon-class');
 						}
 					} else {
 						if (this.plugin.ribbonIconEl) {
