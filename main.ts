@@ -1,15 +1,20 @@
 import { App, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, requestUrl } from 'obsidian';
+import { promises as fs } from 'fs'; // Import fs module
 
 interface XenQuotesSettings {
 	mySetting: string;
 	showRibbonIcon: boolean;
 	enableImageQuote: boolean;
+	imageDirectory: string;
+	saveImagesLocally: boolean;
 }
 
 const DEFAULT_SETTINGS: XenQuotesSettings = {
 	mySetting: 'random',
 	showRibbonIcon: true,
-	enableImageQuote: false
+	enableImageQuote: false,
+	imageDirectory: './images',
+	saveImagesLocally: false,
 }
 
 export default class XenQuotes extends Plugin {
@@ -92,12 +97,30 @@ export default class XenQuotes extends Plugin {
 		try {
 			const response = await requestUrl({ url: "https://zenquotes.io/api/image", method: "GET" });
 			if (response.status === 200) {
-				const imageUrl = response.url; // Assuming the response contains the image URL
-				const quote = "Your quote here"; // Placeholder for the quote
+				const imageUrl = response.url; // Get the image URL directly
 
-				const quoteText = `![Random Image](${imageUrl})\n\n> ${quote}`;
-				view.editor.replaceRange(quoteText, view.editor.getCursor());
-				new Notice("Random image and quote inserted successfully!");
+				if (this.settings.saveImagesLocally) {
+					// Fetch the image binary
+					const imageResponse = await requestUrl({ url: imageUrl, method: "GET" });
+					if (imageResponse.status === 200) {
+						const imagePath = `${this.settings.imageDirectory}/random-image.jpg`; // Use the user-defined directory
+
+						// Save the image locally using Node.js fs module
+						await fs.writeFile(imagePath, Buffer.from(await imageResponse.arrayBuffer())); // Use Buffer.from for binary data
+						
+						const quote = "Your quote here"; // Placeholder for the quote
+						const quoteText = `## Random Daily Image\n\n![Random Image](${imagePath})\n\n> ${quote}`;
+						view.editor.replaceRange(quoteText, view.editor.getCursor());
+						new Notice("Random image and quote inserted successfully!");
+					} else {
+						new Notice("Failed to fetch the image.");
+					}
+				} else {
+					const quote = "Your quote here"; // Placeholder for the quote
+					const quoteText = `## Random Daily Image\n\n![Random Image](${imageUrl})\n\n> ${quote}`;
+					view.editor.replaceRange(quoteText, view.editor.getCursor());
+					new Notice("Random image and quote inserted successfully!");
+				}
 			} else {
 				new Notice("Failed to fetch random image and quote.");
 			}
@@ -200,6 +223,27 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.enableImageQuote)
 				.onChange(async (value) => {
 					this.plugin.settings.enableImageQuote = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Image Directory')
+			.setDesc('Directory to save images locally')
+			.addText(text => text
+				.setPlaceholder('./images')
+				.setValue(this.plugin.settings.imageDirectory)
+				.onChange(async (value) => {
+					this.plugin.settings.imageDirectory = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Save Images Locally')
+			.setDesc('Toggle to save images locally')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.saveImagesLocally)
+				.onChange(async (value) => {
+					this.plugin.settings.saveImagesLocally = value;
 					await this.plugin.saveSettings();
 				}));
 	}
