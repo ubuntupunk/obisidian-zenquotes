@@ -3,11 +3,13 @@ import { App, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, requestUr
 interface XenQuotesSettings {
 	mySetting: string;
 	showRibbonIcon: boolean;
+	enableImageQuote: boolean;
 }
 
 const DEFAULT_SETTINGS: XenQuotesSettings = {
 	mySetting: 'random',
-	showRibbonIcon: true
+	showRibbonIcon: true,
+	enableImageQuote: false
 }
 
 export default class XenQuotes extends Plugin {
@@ -27,7 +29,11 @@ export default class XenQuotes extends Plugin {
 					new Notice('No active note to insert quote into.');
 					return;
 				}
-				await this.fetchAndInsertQuote(activeLeaf);
+				if (this.settings.enableImageQuote) {
+					await this.fetchRandomImageQuote(activeLeaf);
+				} else {
+					await this.fetchAndInsertQuote(activeLeaf);
+				}
 			});
 
 			if (this.ribbonIconEl) {
@@ -45,7 +51,11 @@ export default class XenQuotes extends Plugin {
 					new Notice("No active note to insert quote into.");
 					return;
 				}
-				await this.fetchAndInsertQuote(activeLeaf);
+				if (this.settings.enableImageQuote) {
+					await this.fetchRandomImageQuote(activeLeaf);
+				} else {
+					await this.fetchAndInsertQuote(activeLeaf);
+				}
 			}
 		});
 
@@ -75,6 +85,25 @@ export default class XenQuotes extends Plugin {
 		} catch (error) {
 			console.error("Error fetching quote:", error);
 			new Notice("An error occurred while fetching the quote.");
+		}
+	}
+
+	async fetchRandomImageQuote(view: MarkdownView) {
+		try {
+			const response = await requestUrl({ url: "https://zenquotes.io/api/image", method: "GET" });
+			if (response.status === 200) {
+				const imageUrl = response.url; // Assuming the response contains the image URL
+				const quote = "Your quote here"; // Placeholder for the quote
+
+				const quoteText = `![Random Image](${imageUrl})\n\n> ${quote}`;
+				view.editor.replaceRange(quoteText, view.editor.getCursor());
+				new Notice("Random image and quote inserted successfully!");
+			} else {
+				new Notice("Failed to fetch random image and quote.");
+			}
+		} catch (error) {
+			console.error("Error fetching random image and quote:", error);
+			new Notice("An error occurred while fetching the random image and quote.");
 		}
 	}
 
@@ -148,7 +177,11 @@ class XenQuotesSettingTab extends PluginSettingTab {
 									new Notice('No active note to insert quote into.');
 									return;
 								}
-								await this.plugin.fetchAndInsertQuote(activeLeaf);
+								if (this.plugin.settings.enableImageQuote) {
+									await this.plugin.fetchRandomImageQuote(activeLeaf);
+								} else {
+									await this.plugin.fetchAndInsertQuote(activeLeaf);
+								}
 							});
 							this.plugin.ribbonIconEl.addClass('xenquotes-ribbon-class');
 						}
@@ -158,6 +191,16 @@ class XenQuotesSettingTab extends PluginSettingTab {
 							this.plugin.ribbonIconEl = null;
 						}
 					}
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable Random Image and Quote')
+			.setDesc('Toggle to fetch a random image along with the quote.')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableImageQuote)
+				.onChange(async (value) => {
+					this.plugin.settings.enableImageQuote = value;
+					await this.plugin.saveSettings();
 				}));
 	}
 }
