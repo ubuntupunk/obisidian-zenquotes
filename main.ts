@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, requestUrl } from 'obsidian';
 
 // Remember to rename these classes and interfaces!
 
@@ -17,7 +17,7 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('dice', 'XenQuotes Plugin', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
 			new Notice('This is a notice!');
 		});
@@ -45,6 +45,44 @@ export default class MyPlugin extends Plugin {
 				editor.replaceSelection('Sample Editor Command');
 			}
 		});
+
+		// This adds a command to fetch and insert a quote of the day
+		this.addCommand({
+			id: 'fetch-quote-of-the-day',
+			name: 'Fetch Quote of the Day',
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
+				try {
+					const response = await requestUrl('https://zenquotes.io/api/random');
+					if (response.status === 200) {
+						const quoteData = response.json;
+						if (quoteData && quoteData.length > 0) {
+							const quote = quoteData[0];
+							const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
+							editor.replaceSelection(quoteText);
+							new Notice('Quote inserted successfully!');
+						} else {
+							new Notice("No quote available today.");
+						}
+					} else {
+						new Notice(`Failed to fetch quote. Status: ${response.status}`);
+					}
+				} catch (error) {
+					console.error("Error fetching quote:", error);
+					new Notice("An error occurred while fetching the quote. Check console for details.");
+				}
+			}
+		});
+
+		// This adds an editor command that can perform some operation on the current editor instance
+		this.addCommand({
+			id: 'sample-editor-command',
+			name: 'Sample editor command',
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+				console.log(editor.getSelection());
+				editor.replaceSelection('Sample Editor Command');
+			}
+		});
+
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({
 			id: 'open-sample-modal-complex',
@@ -131,4 +169,39 @@ class SampleSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 	}
+}
+
+class XenQuotes extends Plugin {
+    async onload() {
+        this.addCommand({
+            id: 'fetch-quote-of-the-day',
+            name: 'Fetch Quote of the Day',
+            callback: async () => {
+                try {
+                    const response = await this.requestUrl({ url: "https://zenquotes.io/api/random" });
+                    if (response.status === 200) {
+                        const quoteData = JSON.parse(response.text);
+                        if (quoteData && quoteData.length > 0) {
+                            const quote = quoteData[0];
+                            const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
+                            // Assuming you want to insert this into the current note
+                            const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+                            if (activeLeaf) {
+                                activeLeaf.editor.replaceRange(quoteText, activeLeaf.editor.getCursor());
+                            } else {
+                                new Notice("No active note to insert quote into.");
+                            }
+                        } else {
+                            new Notice("No quote available today.");
+                        }
+                    } else {
+                        new Notice("Failed to fetch quote.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching quote:", error);
+                    new Notice("An error occurred while fetching the quote.");
+                }
+            }
+        });
+    }
 }
