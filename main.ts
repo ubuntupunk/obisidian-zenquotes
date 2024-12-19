@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, requestUrl } from 'obsidian';
+import { App, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, requestUrl } from 'obsidian';
 
 interface XenQuotesSettings {
 	mySetting: string;
@@ -65,7 +65,7 @@ export default class XenQuotes extends Plugin {
 					const quote = quoteData[0];
 					const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
 					view.editor.replaceRange(quoteText, view.editor.getCursor());
-					new Notice("Quote inserted successfully!");
+					new Notice("Daily Quote inserted successfully!");
 				} else {
 					new Notice("No quote available today.");
 				}
