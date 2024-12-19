@@ -7,6 +7,7 @@ interface XenQuotesSettings {
 	enableImageQuote: boolean;
 	imageDirectory: string;
 	saveImagesLocally: boolean;
+	enableOnThisDay: boolean;
 }
 
 const DEFAULT_SETTINGS: XenQuotesSettings = {
@@ -15,6 +16,7 @@ const DEFAULT_SETTINGS: XenQuotesSettings = {
 	enableImageQuote: false,
 	imageDirectory: './images',
 	saveImagesLocally: false,
+	enableOnThisDay: false,
 }
 
 export default class XenQuotes extends Plugin {
@@ -36,6 +38,8 @@ export default class XenQuotes extends Plugin {
 				}
 				if (this.settings.enableImageQuote) {
 					await this.fetchRandomImageQuote(activeLeaf);
+				} else if (this.settings.enableOnThisDay) {
+					await this.fetchOnThisDayQuote(activeLeaf);
 				} else {
 					await this.fetchAndInsertQuote(activeLeaf);
 				}
@@ -58,6 +62,8 @@ export default class XenQuotes extends Plugin {
 				}
 				if (this.settings.enableImageQuote) {
 					await this.fetchRandomImageQuote(activeLeaf);
+				} else if (this.settings.enableOnThisDay) {
+					await this.fetchOnThisDayQuote(activeLeaf);
 				} else {
 					await this.fetchAndInsertQuote(activeLeaf);
 				}
@@ -149,7 +155,57 @@ export default class XenQuotes extends Plugin {
 			console.error("Error fetching random image and quote:", error);
 			new Notice("An error occurred while fetching the random image and quote.");
 		}
-	}	
+	}
+
+	async fetchOnThisDayQuote(view: MarkdownView) {
+		const today = new Date();
+		const month = today.getMonth() + 1; // Months are zero-based
+		const day = today.getDate();
+		const url = `https://today.zenquotes.io/api/${month}/${day}`;
+
+		try {
+			const response = await requestUrl({ url, method: "GET" });
+			console.log("API Response:", response); // Log the response for debugging
+
+			if (response.status === 200) {
+				const events = response.data.Events;
+				const births = response.data.Births;
+				const deaths = response.data.Deaths;
+
+				let output = `## On This Day (${month}/${day})\n\n`;
+
+				if (events.length) {
+					output += "### Events:\n";
+					events.forEach(event => {
+						output += `- ${event.html}\n`;
+					});
+				}
+
+				if (births.length) {
+					output += "### Births:\n";
+					births.forEach(birth => {
+						output += `- ${birth.html}\n`;
+					});
+				}
+
+				if (deaths.length) {
+					output += "### Deaths:\n";
+					deaths.forEach(death => {
+						output += `- ${death.html}\n`;
+					});
+				}
+
+				view.editor.replaceRange(output, view.editor.getCursor());
+				new Notice("On This Day information inserted successfully!");
+			} else {
+				new Notice(`Failed to fetch On This Day information. Status: ${response.status}`);
+			}
+		} catch (error) {
+			console.error("Error fetching On This Day information:", error);
+			new Notice("An error occurred while fetching the On This Day information.");
+		}
+	}
+
 
 	onunload() {
 		if (this.ribbonIconEl) {
@@ -166,6 +222,7 @@ export default class XenQuotes extends Plugin {
 	}
 }
 
+//@PluginSettingTab
 class XenQuotesSettingTab extends PluginSettingTab {
 	plugin: XenQuotes;
 
@@ -197,6 +254,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				.addOption('random', 'Random Quote')
 				.addOption('today', 'Quote of the Day')
 				.addOption('author', 'By Author (Coming Soon)')
+				.addOption('on-this-day', 'On This Day Quote')
 				.setValue(this.plugin.settings.mySetting)
 				.onChange(async (value) => {
 					this.plugin.settings.mySetting = value;
@@ -223,6 +281,8 @@ class XenQuotesSettingTab extends PluginSettingTab {
 								}
 								if (this.plugin.settings.enableImageQuote) {
 									await this.plugin.fetchRandomImageQuote(activeLeaf);
+								} else if (this.plugin.settings.enableOnThisDay) {
+									await this.plugin.fetchOnThisDayQuote(activeLeaf);
 								} else {
 									await this.plugin.fetchAndInsertQuote(activeLeaf);
 								}
@@ -265,6 +325,16 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.saveImagesLocally)
 				.onChange(async (value) => {
 					this.plugin.settings.saveImagesLocally = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable On This Day Quotes')
+			.setDesc('Fetch quotes from historical data based on the current date.')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableOnThisDay)
+				.onChange(async (value) => {
+					this.plugin.settings.enableOnThisDay = value;
 					await this.plugin.saveSettings();
 				}));
 
