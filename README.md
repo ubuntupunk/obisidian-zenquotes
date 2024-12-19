@@ -1,12 +1,16 @@
 # Obsidian XenQuotes Plugin
 
 ## Project Overview
-This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple  plugin thatprovide users with a random quote of the day.
+This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple plugin that provides users with a random quote of the day and inspirational images.
 
 ## Features
 - Fetch random quotes
 - Fetch quotes of the day
+- Fetch and save random images alongside quotes
 - **Coming Soon**: Author-specific quotes! This feature allows users to fetch quotes from specific authors. Since it is dependent upon the ZenQuotes.io API which requires premium API access, we discuss ways to support and unlock this feature in the [Discussions](https://github.com/ubuntpunk/obsidian-xenquotes/discussions) section of the GitHub repo.
+
+## Attribution
+Inspirational quotes and images provided by [ZenQuotes API](https://zenquotes.io/)
 
 ## Community Support
 To help make the author-specific quotes feature available to everyone, please consider supporting the project by:
