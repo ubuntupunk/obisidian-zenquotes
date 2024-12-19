@@ -1,6 +1,6 @@
 {
 	"name": "xenquotes",
-	"version": "1.0.1",
+	"version": "1.0.6",
 	"description": "This is a simple daily quote plugin for Obsidian",
 	"main": "main.js",
 	"scripts": {

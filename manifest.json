@@ -6,5 +6,6 @@
 	"author": "Obsidian",
 	"authorUrl": "https://github.com/ubuntupunk",
 	"fundingUrl": "https://buymeacoffee.com/ubuntupunk",
-	"isDesktopOnly": false
+	"isDesktopOnly": false,
+	"version": "1.0.6"
 }
