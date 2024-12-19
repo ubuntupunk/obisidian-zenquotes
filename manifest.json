@@ -1,11 +1,11 @@
 {
 	"id": "obsidian-xenquotes",
 	"name": "XenQuotes",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Fetches Daily Quotes from xenquotes and displays them.",
 	"author": "Obsidian",
 	"authorUrl": "https://github.com/ubuntupunk",
-	"fundingUrl":"https://buymeacoffee.com/ubuntupunk",
+	"fundingUrl": "https://buymeacoffee.com/ubuntupunk",
 	"isDesktopOnly": false
 }
