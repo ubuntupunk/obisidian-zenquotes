@@ -95,35 +95,50 @@ export default class XenQuotes extends Plugin {
 
 	async fetchRandomImageQuote(view: MarkdownView) {
 		try {
-			const response = await requestUrl({ url: "https://zenquotes.io/api/image", method: "GET" });
+			const response = await requestUrl({ 
+				url: "https://zenquotes.io/api/image", 
+				method: "GET"
+			});
+			
+			// Log all available properties
+			console.log("Response properties:", Object.keys(response));
+			console.log("Full response:", response);
+
 			if (response.status === 200) {
-				const imageUrl = response.url; // Get the image URL directly
-
 				if (this.settings.saveImagesLocally) {
-					// Fetch the image binary
-					const imageResponse = await requestUrl({ url: imageUrl, method: "GET" });
-					console.log("Image Response:", imageResponse); // Log the image response for inspection
+					// Get the vault's base path and create an absolute path for the images directory
+					const basePath = this.app.vault.adapter.getBasePath();
+					const imageDir = `${basePath}/${this.settings.imageDirectory}`;
+					const imagePath = `${imageDir}/random-image.jpg`;
 
-					if (imageResponse.status === 200) {
-						const imagePath = `${this.settings.imageDirectory}/random-image.jpg`; // Use the user-defined directory
+					// Create the directory if it doesn't exist
+					try {
+						await fs.mkdir(imageDir, { recursive: true });
+					} catch (err) {
+						console.log("Directory already exists or creation failed:", err);
+					}
 
-						// Check if imageResponse.data is defined and use it
-						if (imageResponse.data) {
-							await fs.writeFile(imagePath, Buffer.from(imageResponse.data)); // Use the response data directly
+					// Try to write the binary data
+					try {
+						if (response.arrayBuffer) {
+							await fs.writeFile(imagePath, Buffer.from(response.arrayBuffer));
 							
+							// Use a relative path for the markdown link
+							const relativePath = `${this.settings.imageDirectory}/random-image.jpg`;
 							const quote = "Your quote here"; // Placeholder for the quote
-							const quoteText = `## Random Daily Image\n\n![Random Image](${imagePath})\n\n> ${quote}`;
+							const quoteText = `## Random Daily Image\n\n![Random Image](${relativePath})\n\n> ${quote}`;
 							view.editor.replaceRange(quoteText, view.editor.getCursor());
 							new Notice("Random image and quote inserted successfully!");
 						} else {
-							new Notice("Image data is undefined.");
+							throw new Error("No binary data available in response");
 						}
-					} else {
-						new Notice("Failed to fetch the image.");
+					} catch (error) {
+						console.error("Error saving image:", error);
+						new Notice("Failed to save the image.");
 					}
 				} else {
 					const quote = "Your quote here"; // Placeholder for the quote
-					const quoteText = `## Random Daily Image\n\n![Random Image](${imageUrl})\n\n> ${quote}`;
+					const quoteText = `## Random Daily Image\n\n![Random Image](${response.url})\n\n> ${quote}`;
 					view.editor.replaceRange(quoteText, view.editor.getCursor());
 					new Notice("Random image and quote inserted successfully!");
 				}
@@ -134,7 +149,7 @@ export default class XenQuotes extends Plugin {
 			console.error("Error fetching random image and quote:", error);
 			new Notice("An error occurred while fetching the random image and quote.");
 		}
-	}
+	}	
 
 	onunload() {
 		if (this.ribbonIconEl) {
