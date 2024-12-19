@@ -1,26 +1,17 @@
 # Obsidian XenQuotes Plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
-
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
-
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Project Overview
+This project is based on the Obsidian sample plugin for Obsidian. It has now evolved into a simple community-driven plugin thatprovide users with a random quote of the day.
 
 ## Features
 - Fetch random quotes
 - Fetch quotes of the day
-- **Coming Soon**: Author-specific quotes! This feature will allow users to fetch quotes from specific authors. It requires premium API access.
+- **Coming Soon**: Author-specific quotes! This feature will allow users to fetch quotes from specific authors. Since it is dependent upon ZenQuotes.io API which requires premium API access, we discuss ways to unlock this feature in the [Discussions](https://github.com/ubuntpunk/obsidian-xenquotes/discussions) section of the GitHub repo.
 
 ## Community Support
 To help make the author-specific quotes feature available to everyone, please consider supporting the project by:
 1. ⭐ Starring our repository on [GitHub](https://github.com/ubuntpunk/obsidian-xenquotes)
-2. 💝 Contributing to our [Open Collective](https://opencollective.com/ubuntupunk) campaign
+2. 💝 Fund development and unlocking new features via [buymeacoffee](https://buymeacoffee.com/ubuntupunk)
 3. 🤝 Joining our community discussions on GitHub
 
 ## First time developing plugins?
@@ -81,26 +72,11 @@ Quick starting guide for new plugin devs:
 
 You can include funding URLs where people who use your plugin can financially support it.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
-
-If you have multiple URLs, you can also do:
-
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
 
 ## API Documentation
 
 See https://github.com/obsidianmd/obsidian-api
+
+## Acknowledgments
+This plugin is built upon the foundational work of the Obsidian sample plugin, which provided the initial structure and guidance for developing plugins within the Obsidian ecosystem.
