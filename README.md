@@ -1,4 +1,4 @@
-# Obsidian Sample Plugin
+# Obsidian XenQuotes Plugin
 
 This is a sample plugin for Obsidian (https://obsidian.md).
 
@@ -11,6 +11,17 @@ This sample plugin demonstrates some of the basic functionality the plugin API c
 - Adds a plugin setting tab to the settings page.
 - Registers a global click event and output 'click' to the console.
 - Registers a global interval which logs 'setInterval' to the console.
+
+## Features
+- Fetch random quotes
+- Fetch quotes of the day
+- **Coming Soon**: Author-specific quotes! This feature will allow users to fetch quotes from specific authors. It requires premium API access.
+
+## Community Support
+To help make the author-specific quotes feature available to everyone, please consider supporting the project by:
+1. ⭐ Starring our repository on [GitHub](https://github.com/ubuntpunk/obsidian-xenquotes)
+2. 💝 Contributing to our [Open Collective](https://opencollective.com/ubuntupunk) campaign
+3. 🤝 Joining our community discussions on GitHub
 
 ## First time developing plugins?
 
@@ -44,12 +55,13 @@ Quick starting guide for new plugin devs:
 - Make sure you have a `README.md` file in the root of your repo.
 - Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
 
-## How to use
+## Installation
+- Clone the repository
+- Install dependencies using `pnpm`
+- Enable the plugin in Obsidian
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+## Usage
+- Use the command palette to fetch quotes and configure settings.
 
 ## Manually installing the plugin
 
