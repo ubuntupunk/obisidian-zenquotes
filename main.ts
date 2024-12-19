@@ -102,16 +102,22 @@ export default class XenQuotes extends Plugin {
 				if (this.settings.saveImagesLocally) {
 					// Fetch the image binary
 					const imageResponse = await requestUrl({ url: imageUrl, method: "GET" });
+					console.log("Image Response:", imageResponse); // Log the image response for inspection
+
 					if (imageResponse.status === 200) {
 						const imagePath = `${this.settings.imageDirectory}/random-image.jpg`; // Use the user-defined directory
 
-						// Save the image locally using Node.js fs module
-						await fs.writeFile(imagePath, Buffer.from(await imageResponse.arrayBuffer())); // Use Buffer.from for binary data
-						
-						const quote = "Your quote here"; // Placeholder for the quote
-						const quoteText = `## Random Daily Image\n\n![Random Image](${imagePath})\n\n> ${quote}`;
-						view.editor.replaceRange(quoteText, view.editor.getCursor());
-						new Notice("Random image and quote inserted successfully!");
+						// Check if imageResponse.data is defined and use it
+						if (imageResponse.data) {
+							await fs.writeFile(imagePath, Buffer.from(imageResponse.data)); // Use the response data directly
+							
+							const quote = "Your quote here"; // Placeholder for the quote
+							const quoteText = `## Random Daily Image\n\n![Random Image](${imagePath})\n\n> ${quote}`;
+							view.editor.replaceRange(quoteText, view.editor.getCursor());
+							new Notice("Random image and quote inserted successfully!");
+						} else {
+							new Notice("Image data is undefined.");
+						}
 					} else {
 						new Notice("Failed to fetch the image.");
 					}
