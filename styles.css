@@ -6,3 +6,22 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+.xenquotes-announcement {
+	background-color: var(--background-secondary);
+	border-radius: 8px;
+	padding: 16px;
+	margin-bottom: 24px;
+}
+.xenquotes-announcement h3 {
+	margin: 0 0 12px 0;
+	color: var(--text-accent);
+}
+.xenquotes-announcement p {
+	margin: 0;
+	color: var(--text-muted);
+}
+.xenquotes-announcement a {
+	color: var(--text-accent);
+	text-decoration: underline;
+}

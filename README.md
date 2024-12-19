@@ -1,18 +1,18 @@
 # Obsidian XenQuotes Plugin
 
 ## Project Overview
-This project is based on the Obsidian sample plugin for Obsidian. It has now evolved into a simple community-driven plugin thatprovide users with a random quote of the day.
+This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple  plugin thatprovide users with a random quote of the day.
 
 ## Features
 - Fetch random quotes
 - Fetch quotes of the day
-- **Coming Soon**: Author-specific quotes! This feature will allow users to fetch quotes from specific authors. Since it is dependent upon ZenQuotes.io API which requires premium API access, we discuss ways to unlock this feature in the [Discussions](https://github.com/ubuntpunk/obsidian-xenquotes/discussions) section of the GitHub repo.
+- **Coming Soon**: Author-specific quotes! This feature allows users to fetch quotes from specific authors. Since it is dependent upon the ZenQuotes.io API which requires premium API access, we discuss ways to support and unlock this feature in the [Discussions](https://github.com/ubuntpunk/obsidian-xenquotes/discussions) section of the GitHub repo.
 
 ## Community Support
 To help make the author-specific quotes feature available to everyone, please consider supporting the project by:
 1. ⭐ Starring our repository on [GitHub](https://github.com/ubuntpunk/obsidian-xenquotes)
 2. 💝 Fund development and unlocking new features via [buymeacoffee](https://buymeacoffee.com/ubuntupunk)
-3. 🤝 Joining our community discussions on GitHub
+3. 🤝 Joining our community discussions on GitHub.
 
 ## First time developing plugins?
 
@@ -54,25 +54,33 @@ Quick starting guide for new plugin devs:
 ## Usage
 - Use the command palette to fetch quotes and configure settings.
 
-## Manually installing the plugin
+## Recent Updates
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+### Version 1.0.0
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+- **Ribbon Icon Functionality:** 
+  - The ribbon icon now correctly fetches and inserts quotes into the active note when clicked.
+  - Improved error handling and logging for better debugging.
 
-## Funding URL
+- **Command Execution:** 
+  - The command to fetch the quote of the day can be executed via the command palette (Ctrl + Shift + P) and is also triggered by the ribbon icon.
 
-You can include funding URLs where people who use your plugin can financially support it.
+- **Settings Improvements:** 
+  - Added a dropdown for selecting the quote mode (Random, Today, Author).
+  - Enhanced user interface elements for better usability.
 
+### Version 1.0.1
 
+- **New Feature:** 
+  - Added support for author-specific quotes.
+  - Improved performance and reduced latency.
+
+- **Bug Fixes:** 
+  - Fixed an issue where the ribbon icon would not work correctly in certain situations.
+  - Improved error handling and logging for better debugging.
+
+### Known Issues
+- Ensure that an active Markdown note is open when using the ribbon icon to avoid errors.
 
 ## API Documentation
 

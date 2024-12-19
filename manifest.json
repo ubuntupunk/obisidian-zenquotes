@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-xenquotes",
+	"name": "XenQuotes",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
+	"description": "Fetches Daily Quotes from xenquotes and displays them.",
 	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/ubuntupunk",
+	"fundingUrl":"https://buymeacoffee.com/ubuntupunk",
 	"isDesktopOnly": false
 }
