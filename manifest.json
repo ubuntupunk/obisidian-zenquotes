@@ -1,7 +1,7 @@
 {
-	"id": "obsidian-xenquotes",
+	"id": "xenquotes",
 	"name": "XenQuotes",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Fetches Daily Quotes from xenquotes and displays them.",
 	"author": "Obsidian",
