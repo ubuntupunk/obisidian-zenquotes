@@ -20,28 +20,8 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		if (this.settings.showRibbonIcon) {
-			const ribbonIconEl = this.addRibbonIcon('dice', 'XenQuotes Plugin', async (evt: MouseEvent) => {
-				const editor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor;
-				if (editor) {
-					// Fetch the daily quote
-					const response = await requestUrl(`https://zenquotes.io/api/random`);
-					if (response.status === 200) {
-						const quoteData = response.json;
-						if (quoteData && quoteData.length > 0) {
-							const quote = quoteData[0];
-							const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
-							// Insert the quote into the editor
-							editor.replaceSelection(quoteText);
-							new Notice('Quote inserted successfully!');
-						} else {
-							new Notice("No quote available today.");
-						}
-					} else {
-						new Notice(`Failed to fetch quote. Status: ${response.status}`);
-					}
-				} else {
-					new Notice("No active note to insert quote into.");
-				}
+			const ribbonIconEl = this.addRibbonIcon('dice', 'XenQuotes Plugin', (evt: MouseEvent) => {
+				this.app.commands.executeCommandById('fetch-quote-of-the-day');
 			});
 			if (ribbonIconEl) {
 				ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -213,28 +193,8 @@ class SampleSettingTab extends PluginSettingTab {
 					this.plugin.settings.showRibbonIcon = value;
 					await this.plugin.saveSettings();
 					if (value) {
-						this.plugin.ribbonIconEl = this.plugin.addRibbonIcon('dice', 'XenQuotes Plugin', async (evt: MouseEvent) => {
-							const editor = this.plugin.app.workspace.getActiveViewOfType(MarkdownView)?.editor;
-							if (editor) {
-								// Fetch the daily quote
-								const response = await requestUrl(`https://zenquotes.io/api/random`);
-								if (response.status === 200) {
-									const quoteData = response.json;
-									if (quoteData && quoteData.length > 0) {
-										const quote = quoteData[0];
-										const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
-										// Insert the quote into the editor
-										editor.replaceSelection(quoteText);
-										new Notice('Quote inserted successfully!');
-									} else {
-										new Notice("No quote available today.");
-									}
-								} else {
-									new Notice(`Failed to fetch quote. Status: ${response.status}`);
-								}
-							} else {
-								new Notice("No active note to insert quote into.");
-							}
+						this.plugin.ribbonIconEl = this.plugin.addRibbonIcon('dice', 'XenQuotes Plugin', (evt: MouseEvent) => {
+							this.plugin.app.commands.executeCommandById('fetch-quote-of-the-day');
 						});
 						if (this.plugin.ribbonIconEl) {
 							this.plugin.ribbonIconEl.addClass('my-plugin-ribbon-class');
