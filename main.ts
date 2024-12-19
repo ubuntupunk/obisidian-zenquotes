@@ -174,7 +174,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
+	display(container: HTMLElement) {
 		const {containerEl} = this;
 
 		containerEl.empty();
@@ -267,5 +267,13 @@ class XenQuotesSettingTab extends PluginSettingTab {
 					this.plugin.settings.saveImagesLocally = value;
 					await this.plugin.saveSettings();
 				}));
+
+		const attribution = document.createElement('div');
+		attribution.innerHTML = 'Inspirational quotes and images provided by <a href="https://zenquotes.io/" target="_blank">ZenQuotes API</a>';
+		attribution.style.marginTop = '20px';
+		attribution.style.fontSize = '0.9em';
+		attribution.style.color = '#555'; // Optional styling
+
+		containerEl.appendChild(attribution);
 	}
 }
