@@ -50,13 +50,17 @@ Quick starting guide for new plugin devs:
 - Make sure you have a `README.md` file in the root of your repo.
 - Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
 
-## Installation
-- Clone the repository
-- Install dependencies using `pnpm`
-- Enable the plugin in Obsidian
+## Installation Instructions
 
-## Usage
-- Use the command palette to fetch quotes and configure settings.
+1. Download the latest release from the [Releases](https://github.com/ubuntupunk/obsidian-xenquotes/releases) page.
+2. Place the plugin folder in your Obsidian plugins directory: `YOUR_OBSIDIAN_VAULT/.obsidian/plugins/`.
+3. Open Obsidian and enable the plugin from the settings.
+
+## Usage Instructions
+
+- To fetch a random quote, use the command palette or the ribbon icon.
+- You can customize settings by navigating to the plugin settings in Obsidian.
+- The plugin will automatically fetch and display a random quote along with an inspirational image.
 
 ## Recent Updates
 
