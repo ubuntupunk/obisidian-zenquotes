@@ -162,41 +162,50 @@ export default class XenQuotes extends Plugin {
 		const month = today.getMonth() + 1; // Months are zero-based
 		const day = today.getDate();
 		const url = `https://today.zenquotes.io/api/${month}/${day}`;
+		
+		console.log("Calling URL:", url);
 
 		try {
 			const response = await requestUrl({ url, method: "GET" });
-			console.log("API Response:", response); // Log the response for debugging
+			console.log("API Response Status:", response.status);
+			console.log("API Response Body:", JSON.stringify(response, null, 2));
 
-			if (response.status === 200) {
-				const events = response.data.Events;
-				const births = response.data.Births;
-				const deaths = response.data.Deaths;
+			if (response.status === 200 && response.json) {
+				const apiData = response.json;
+				console.log("API Data:", apiData);
+				
+				if (apiData.data) {
+					const { Events = [], Births = [], Deaths = [] } = apiData.data;
+					
+					let output = `## On This Day (${apiData.date})\n\n`;
 
-				let output = `## On This Day (${month}/${day})\n\n`;
+					if (Events && Events.length) {
+						output += "### Events:\n";
+						Events.forEach(event => {
+							output += `- ${event.text}\n`;
+						});
+					}
 
-				if (events.length) {
-					output += "### Events:\n";
-					events.forEach(event => {
-						output += `- ${event.html}\n`;
-					});
+					if (Births && Births.length) {
+						output += "\n### Births:\n";
+						Births.forEach(birth => {
+							output += `- ${birth.text}\n`;
+						});
+					}
+
+					if (Deaths && Deaths.length) {
+						output += "\n### Deaths:\n";
+						Deaths.forEach(death => {
+							output += `- ${death.text}\n`;
+						});
+					}
+
+					view.editor.replaceRange(output, view.editor.getCursor());
+					new Notice("On This Day information inserted successfully!");
+				} else {
+					console.error("Unexpected data structure:", apiData);
+					new Notice("Received unexpected data structure from API.");
 				}
-
-				if (births.length) {
-					output += "### Births:\n";
-					births.forEach(birth => {
-						output += `- ${birth.html}\n`;
-					});
-				}
-
-				if (deaths.length) {
-					output += "### Deaths:\n";
-					deaths.forEach(death => {
-						output += `- ${death.html}\n`;
-					});
-				}
-
-				view.editor.replaceRange(output, view.editor.getCursor());
-				new Notice("On This Day information inserted successfully!");
 			} else {
 				new Notice(`Failed to fetch On This Day information. Status: ${response.status}`);
 			}
