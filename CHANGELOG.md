@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.07] - 2024-12-20
+### Added
+- Introduced custom inputs for selecting century and decade in the On This Day feature.
+- Implemented filtering logic for fetching quotes based on user-defined century and decade.
+
+### Changed
+- Updated the date format in the On This Day feature to a more user-friendly format (e.g., "December 20th").
+- Enhanced the attribution text to include historical data alongside quotes and images.
+
+### Removed
+- Deprecated the dropdowns for selecting century and decade in favor of custom input fields.
+
+## [1.06] - 2024-12-19
+### Added
+- Initial release of the On This Day feature.
+- Fetch historical quotes based on the current date.
+
+### Changed
+- Various UI improvements and bug fixes.
+
 ## [v1.0.6] - 2024-12-19
 - Added ZenQuotes API attribution to settings page
 - Fixed image fetching and storage functionality

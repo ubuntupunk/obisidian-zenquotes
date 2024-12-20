@@ -60,6 +60,13 @@ const filterEventsByYear = (events: any[], century: number | null = null, decade
     });
 };
 
+// Function to format the date
+const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options).replace(/\s+/g, ' ');
+};
+
 export default class XenQuotes extends Plugin {
 	settings: XenQuotesSettings;
 	ribbonIconEl: HTMLElement | null = null;
@@ -239,7 +246,7 @@ export default class XenQuotes extends Plugin {
 						Deaths = filterEventsByYear(Deaths, century, decade);
 					}
 					
-					let output = `## On This Day (${apiData.date})\n\n`;
+					let output = `## On This Day ${formatDate(apiData.date)}\n\n`;
 
 					if (Events && Events.length) {
 						output += "### Events:\n";
@@ -413,44 +420,18 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Select Century')
-			.setDesc('Select the century for On This Day quotes')
-			.addDropdown(dropdown => dropdown
-				.addOption(20, '20th century')
-				.addOption(21, '21st century')
-				.addOption(22, '22nd century')
-				.setValue(this.plugin.settings.selectedCentury)
-				.onChange(async (value) => {
-					this.plugin.settings.selectedCentury = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Select Decade')
-			.setDesc('Select the decade for On This Day quotes')
-			.addDropdown(dropdown => dropdown
-				.addOption(0, '2000s')
-				.addOption(1, '2010s')
-				.addOption(2, '2020s')
-				.setValue(this.plugin.settings.selectedDecade)
-				.onChange(async (value) => {
-					this.plugin.settings.selectedDecade = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Custom Decade')
-			.setDesc('Enter a custom decade (0-9)')
-			.addText(text => text
-				.setPlaceholder('Enter decade')
-				.setValue(this.plugin.settings.selectedDecade.toString())
-				.onChange(async (value) => {
-					const decadeValue = parseInt(value);
-					if (!isNaN(decadeValue) && decadeValue >= 0 && decadeValue <= 9) {
-						this.plugin.settings.selectedDecade = decadeValue;
-						await this.plugin.saveSettings();
-					}
-				}));
+            .setName('Custom Decade')
+            .setDesc('Enter a custom decade (0-9)')
+            .addText(text => text
+                .setPlaceholder('Enter decade')
+                .setValue(this.plugin.settings.selectedDecade.toString())
+                .onChange(async (value) => {
+                    const decadeValue = parseInt(value);
+                    if (!isNaN(decadeValue) && decadeValue >= 0 && decadeValue <= 9) {
+                        this.plugin.settings.selectedDecade = decadeValue;
+                        await this.plugin.saveSettings();
+                    }
+                }));
 
 		new Setting(containerEl)
             .setName('Custom Century')
@@ -487,7 +468,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		const attribution = document.createElement('div');
-		attribution.innerHTML = 'Inspirational quotes and images provided by <a href="https://zenquotes.io/" target="_blank">ZenQuotes API</a>';
+		attribution.innerHTML = 'Inspirational quotes, images & historical data provided by <a href="https://zenquotes.io/" target="_blank">ZenQuotes API</a>';
 		attribution.style.marginTop = '20px';
 		attribution.style.fontSize = '0.9em';
 		attribution.style.color = '#555'; // Optional styling
