@@ -1,13 +1,20 @@
 # Obsidian XenQuotes Plugin
 
 ## Project Overview
-This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple plugin that provides users with a random quote of the day and inspirational images.
+This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple plugin that provides users with a random quote of the day, inspirational images, and an "On This Day" feature to pull historical quotes based on the current date.
 
 ## Features
 - Fetch random quotes
 - Fetch quotes of the day
 - Fetch and save random images alongside quotes
 - **Coming Soon**: Author-specific quotes! This feature allows users to fetch quotes from specific authors. Since it is dependent upon the ZenQuotes.io API which requires premium API access, we discuss ways to support and unlock this feature in the [Discussions](https://github.com/ubuntpunk/obsidian-xenquotes/discussions) section of the GitHub repo.
+- **On This Day**: Fetch historical quotes based on the current date.
+
+## On This Day Feature
+The On This Day feature allows users to retrieve notable events, births, and deaths that occurred on the current date. The data is fetched from the ZenQuotes API and displayed in a structured format.
+
+### Usage
+To use the On This Day feature, simply enable it in the plugin settings and trigger the fetch action. The historical data will be inserted into your current note.
 
 ## Attribution
 Inspirational quotes and images provided by [ZenQuotes API](https://zenquotes.io/)
