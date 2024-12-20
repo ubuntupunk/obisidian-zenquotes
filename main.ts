@@ -8,6 +8,10 @@ interface XenQuotesSettings {
 	imageDirectory: string;
 	saveImagesLocally: boolean;
 	enableOnThisDay: boolean;
+	selectedCentury: number; 
+	selectedDecade: number;   
+	allCenturies: boolean;
+	allDecades: boolean;
 }
 
 const DEFAULT_SETTINGS: XenQuotesSettings = {
@@ -17,7 +21,44 @@ const DEFAULT_SETTINGS: XenQuotesSettings = {
 	imageDirectory: './images',
 	saveImagesLocally: false,
 	enableOnThisDay: false,
+	selectedCentury: 21,
+	selectedDecade: 0,
+	allCenturies: false,
+	allDecades: false,
 }
+
+const cleanText = (text: string) => {
+	return text.replace(/&#8211;/g, '-')
+			   .replace(/\s+/g, ' ')
+			   .trim(); // Remove extra spaces and trim
+};
+
+// Helper function to get century from year
+const getCentury = (year: number): number => Math.ceil(year / 100);
+
+// Helper function to get decade from year
+const getDecade = (year: number): number => Math.floor((year % 100) / 10);
+
+// Helper function to filter events by year
+const filterEventsByYear = (events: any[], century: number | null = null, decade: number | null = null): any[] => {
+    return events.filter(event => {
+        const yearMatch = event.text.match(/\b\d{4}\b/);
+        if (!yearMatch) return false;
+        
+        const year = parseInt(yearMatch[0]);
+        const eventCentury = getCentury(year);
+        const eventDecade = getDecade(year);
+        
+        if (century && decade) {
+            return eventCentury === century && eventDecade === decade;
+        } else if (century) {
+            return eventCentury === century;
+        } else if (decade) {
+            return eventDecade === decade;
+        }
+        return true;
+    });
+};
 
 export default class XenQuotes extends Plugin {
 	settings: XenQuotesSettings;
@@ -161,6 +202,9 @@ export default class XenQuotes extends Plugin {
 		const today = new Date();
 		const month = today.getMonth() + 1; // Months are zero-based
 		const day = today.getDate();
+		const century = this.settings.selectedCentury;
+		const decade = this.settings.selectedDecade;
+		
 		const url = `https://today.zenquotes.io/api/${month}/${day}`;
 		
 		console.log("Calling URL:", url);
@@ -168,36 +212,58 @@ export default class XenQuotes extends Plugin {
 		try {
 			const response = await requestUrl({ url, method: "GET" });
 			console.log("API Response Status:", response.status);
-			console.log("API Response Body:", JSON.stringify(response, null, 2));
 
 			if (response.status === 200 && response.json) {
 				const apiData = response.json;
-				console.log("API Data:", apiData);
 				
 				if (apiData.data) {
-					const { Events = [], Births = [], Deaths = [] } = apiData.data;
+					let { Events = [], Births = [], Deaths = [] } = apiData.data;
+					
+					// Apply filters based on settings
+					if (this.settings.allCenturies && this.settings.allDecades) {
+						// No filtering needed, show all events
+					} else if (this.settings.allCenturies) {
+						// Filter only by decade
+						Events = filterEventsByYear(Events, null, decade);
+						Births = filterEventsByYear(Births, null, decade);
+						Deaths = filterEventsByYear(Deaths, null, decade);
+					} else if (this.settings.allDecades) {
+						// Filter only by century
+						Events = filterEventsByYear(Events, century, null);
+						Births = filterEventsByYear(Births, century, null);
+						Deaths = filterEventsByYear(Deaths, century, null);
+					} else if (century && decade) {
+						// Filter by both century and decade
+						Events = filterEventsByYear(Events, century, decade);
+						Births = filterEventsByYear(Births, century, decade);
+						Deaths = filterEventsByYear(Deaths, century, decade);
+					}
 					
 					let output = `## On This Day (${apiData.date})\n\n`;
 
 					if (Events && Events.length) {
 						output += "### Events:\n";
 						Events.forEach(event => {
-							output += `- ${event.text}\n`;
+							output += `- [${cleanText(event.text)}](https://wikipedia.org/wiki/${cleanText(event.text)})\n`;
 						});
 					}
 
 					if (Births && Births.length) {
 						output += "\n### Births:\n";
 						Births.forEach(birth => {
-							output += `- ${birth.text}\n`;
+							output += `- [${cleanText(birth.text)}](https://wikipedia.org/wiki/${cleanText(birth.text)})\n`;
 						});
 					}
 
 					if (Deaths && Deaths.length) {
 						output += "\n### Deaths:\n";
 						Deaths.forEach(death => {
-							output += `- ${death.text}\n`;
+							output += `- [${cleanText(death.text)}](https://wikipedia.org/wiki/${cleanText(death.text)})\n`;
 						});
+					}
+
+					if (!Events.length && !Births.length && !Deaths.length) {
+						output += "No events found for the selected time period.\n";
 					}
 
 					view.editor.replaceRange(output, view.editor.getCursor());
@@ -214,7 +280,6 @@ export default class XenQuotes extends Plugin {
 			new Notice("An error occurred while fetching the On This Day information.");
 		}
 	}
-
 
 	onunload() {
 		if (this.ribbonIconEl) {
@@ -344,6 +409,80 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.enableOnThisDay)
 				.onChange(async (value) => {
 					this.plugin.settings.enableOnThisDay = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Select Century')
+			.setDesc('Select the century for On This Day quotes')
+			.addDropdown(dropdown => dropdown
+				.addOption(20, '20th century')
+				.addOption(21, '21st century')
+				.addOption(22, '22nd century')
+				.setValue(this.plugin.settings.selectedCentury)
+				.onChange(async (value) => {
+					this.plugin.settings.selectedCentury = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Select Decade')
+			.setDesc('Select the decade for On This Day quotes')
+			.addDropdown(dropdown => dropdown
+				.addOption(0, '2000s')
+				.addOption(1, '2010s')
+				.addOption(2, '2020s')
+				.setValue(this.plugin.settings.selectedDecade)
+				.onChange(async (value) => {
+					this.plugin.settings.selectedDecade = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Custom Decade')
+			.setDesc('Enter a custom decade (0-9)')
+			.addText(text => text
+				.setPlaceholder('Enter decade')
+				.setValue(this.plugin.settings.selectedDecade.toString())
+				.onChange(async (value) => {
+					const decadeValue = parseInt(value);
+					if (!isNaN(decadeValue) && decadeValue >= 0 && decadeValue <= 9) {
+						this.plugin.settings.selectedDecade = decadeValue;
+						await this.plugin.saveSettings();
+					}
+				}));
+
+		new Setting(containerEl)
+            .setName('Custom Century')
+            .setDesc('Enter the century for On This Day quotes (e.g., 21 for 21st century)')
+            .addText(text => text
+                .setPlaceholder('Enter century')
+                .setValue(this.plugin.settings.selectedCentury.toString())
+                .onChange(async (value) => {
+                    const centuryValue = parseInt(value);
+                    if (!isNaN(centuryValue) && centuryValue > 0) {
+                        this.plugin.settings.selectedCentury = centuryValue;
+                        await this.plugin.saveSettings();
+                   }
+               }));
+
+		new Setting(containerEl)
+			.setName('All Centuries')
+			.setDesc('Fetch quotes from all centuries')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.allCenturies)
+				.onChange(async (value) => {
+					this.plugin.settings.allCenturies = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('All Decades')
+			.setDesc('Fetch quotes from all decades')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.allDecades)
+				.onChange(async (value) => {
+					this.plugin.settings.allDecades = value;
 					await this.plugin.saveSettings();
 				}));
 
