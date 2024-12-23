@@ -132,7 +132,7 @@ export default class XenQuotes extends Plugin {
 				const quoteData = JSON.parse(response.text);
 				if (quoteData && quoteData.length > 0) {
 					const quote = quoteData[0];
-					const quoteText = `**Quote of the Day:**\n\n> ${quote.q}\n\n— ${quote.a}`;
+					const quoteText = `>[!quote]+ Quote of the Day:\n>\n> ${quote.q}\n>\n> — <cite>${quote.a}</cite> \u270D\uFE0F\n---`;
 					view.editor.replaceRange(quoteText, view.editor.getCursor());
 					new Notice("Daily Quote inserted successfully!");
 				} else {
@@ -179,8 +179,8 @@ export default class XenQuotes extends Plugin {
 							
 							// Use a relative path for the markdown link
 							const relativePath = `${this.settings.imageDirectory}/random-image.jpg`;
-							const quote = "Your quote here"; // Placeholder for the quote
-							const quoteText = `## Random Daily Image\n\n![Random Image](${relativePath})\n\n> ${quote}`;
+							const quote = ""; // Placeholder for the quote
+							const quoteText = `## Daily Image\n\n![Random Image](${relativePath})\n\n ${quote}`;
 							view.editor.replaceRange(quoteText, view.editor.getCursor());
 							new Notice("Random image and quote inserted successfully!");
 						} else {
@@ -191,8 +191,8 @@ export default class XenQuotes extends Plugin {
 						new Notice("Failed to save the image.");
 					}
 				} else {
-					const quote = "Your quote here"; // Placeholder for the quote
-					const quoteText = `## Random Daily Image\n\n![Random Image](${response.url})\n\n> ${quote}`;
+					const quote = ""; // Placeholder for the quote
+					const quoteText = `## Daily Image & Quote\n\n![Random Image](${response.url})\n\n> ${quote}`;
 					view.editor.replaceRange(quoteText, view.editor.getCursor());
 					new Notice("Random image and quote inserted successfully!");
 				}
@@ -321,12 +321,12 @@ class XenQuotesSettingTab extends PluginSettingTab {
 		announcementEl.addClass('announcement');
 
 		const messageEl = announcementEl.createEl('p');
-		messageEl.innerHTML = 'This plugin is currently limited to fetching random or daily quotes. You can also fetch quotes from specific authors! ' +
-			'However, this feature requires a subscription to the ZenQuotes API. If you\'d like to help make this feature available to everyone, ' +
+		messageEl.innerHTML = 'This plugin is currently limited to fetching random or daily quotes, historical onthisday data and images. You can also fetch quotes from specific authors! ' +
+			'However, this feature requires a subscription to the ZenQuotes API. If you\'d like to help make this feature available to everyone, and support further development such as formatting the quote & tags, ' +
 			'please consider supporting the project by: <br>' +
 			'1. ⭐ Starring our repository on <a href="https://github.com/ubuntpunk/obsidian-xenquotes">GitHub</a><br>' +
 			'2. 💝 Funding development and unlocking features for the entire community via <a href="https://buymeacoffee.com/ubuntupunk">buymeacoffee.com</a><br>' +
-			'3. 🤝 Joining our <a href="https://github.com/ubuntupunk/discussion">community discussions on GitHub</a>';
+			'3. 🤝 Joining our <a href="https://github.com/ubuntupunk/obsidian-xenquotes/discussions">community discussions on GitHub</a>';
 
 		new Setting(containerEl)
 			.setName('Quote Mode')
