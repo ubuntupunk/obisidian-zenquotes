@@ -245,9 +245,10 @@ export default class XenQuotes extends Plugin {
 						Births = filterEventsByYear(Births, century, decade);
 						Deaths = filterEventsByYear(Deaths, century, decade);
 					}
-					
-					let output = `## On This Day ${formatDate(apiData.date)}\n\n`;
 
+					console.log("API Response Data:", apiData);	
+					let currentYear = today.getFullYear(); // Get the current year	
+					let output = `## On This Day ${formatDate(`${month}/${day}/${currentYear}`)}\n\n`;
 					if (Events && Events.length) {
 						output += "### Events:\n";
 						Events.forEach(event => {
