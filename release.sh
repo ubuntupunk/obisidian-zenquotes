@@ -2,7 +2,7 @@
 
 # Define variables
 VERSION=$1
-RELEASE_TITLE="Release v$VERSION"
+RELEASE_TITLE="Release $VERSION"
 CHANGELOG_FILE="CHANGELOG.md"
 FILES_TO_UPLOAD=("main.ts" "main.js" "styles.css" "manifest.json")
 
@@ -13,8 +13,8 @@ if [ -z "$VERSION" ]; then
 fi
 
 # Step 1: Create a new tag
-git tag -a "v$VERSION" -m "$RELEASE_TITLE"
-git push origin "v$VERSION"
+git tag -a "$VERSION" -m "$RELEASE_TITLE"
+git push origin "$VERSION"
 
 # Step 2: Update CHANGELOG.md
 echo "Enter the update for the changelog:"
@@ -24,7 +24,7 @@ echo -e "\n## [$VERSION] - $(date +%Y-%m-%d)\n### Summary of Changes:\n$CHANGELO
 # Step 3: Upload files to the release
 echo "Enter the description for the release:"
 read RELEASE_DESCRIPTION
-gh release create "v$VERSION" "${FILES_TO_UPLOAD[@]}" --title "$RELEASE_TITLE" --notes "$RELEASE_DESCRIPTION"
+gh release create "$VERSION" "${FILES_TO_UPLOAD[@]}" --title "$RELEASE_TITLE" --notes "$RELEASE_DESCRIPTION"
 
 # Step 4: Notify success
-echo "Release v$VERSION created successfully!"
+echo "Release $VERSION created successfully!"
