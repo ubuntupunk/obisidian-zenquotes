@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.12] - 2024-12-27
+### Summary of Changes:
+- **Enhanced Security**: Updated the plugin to eliminate the use of `innerHTML`, replacing it with safer DOM manipulation methods. This change significantly reduces the risk of potential security vulnerabilities.
+  
+- **Improved Date Handling**: The `On This Day` feature now accurately reflects the current date by using the system's date instead of relying on the API's potentially outdated responses. This ensures users receive relevant and timely information.
+
+- **Attribution Section**: Added a new attribution line to acknowledge the development team, enhancing the transparency and community engagement of the plugin.
+
+- **Styling Updates**: Refined the CSS styles for better compatibility with various themes, ensuring a consistent and visually appealing user experience across different setups.
+
+### Files Included:
+- `manifest.json`: Updated to reflect the new version and changes.
+- `styles.css`: Contains the latest styling adjustments for improved UI.
+- `main.ts`: Core functionality enhancements and security improvements.
+
 ## [1.0.7] - 2024-12-20
 ### Added
 - Introduced custom inputs for selecting century and decade in the On This Day feature.
