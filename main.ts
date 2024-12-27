@@ -321,12 +321,40 @@ class XenQuotesSettingTab extends PluginSettingTab {
 		announcementEl.addClass('announcement');
 
 		const messageEl = announcementEl.createEl('p');
-		messageEl.innerHTML = 'This plugin is currently limited to fetching random or daily quotes, historical onthisday data and images. You can also fetch quotes from specific authors! ' +
-			'However, this feature requires a subscription to the ZenQuotes API. If you\'d like to help make this feature available to everyone, and support further development such as formatting the quote & tags, ' +
-			'please consider supporting the project by: <br>' +
-			'1. ⭐ Starring our repository on <a href="https://github.com/ubuntpunk/obsidian-xenquotes">GitHub</a><br>' +
-			'2. 💝 Funding development and unlocking features for the entire community via <a href="https://buymeacoffee.com/ubuntupunk">buymeacoffee.com</a><br>' +
-			'3. 🤝 Joining our <a href="https://github.com/ubuntupunk/obsidian-xenquotes/discussions">community discussions on GitHub</a>';
+	    messageEl.empty();
+		
+		messageEl.createSpan({
+			text:  'This plugin is currently limited to fetching random or daily quotes, historical onthisday data and images. You can also fetch quotes from specific authors! ' +
+          'However, this feature requires a subscription to the ZenQuotes API. If you\'d like to help make this feature available to everyone, and support further development such as formatting the quote & tags, ' +
+          'please consider supporting the project by:'
+		});
+
+		const bulletList = messageEl.createEl('ul');
+
+		const links = [
+			{
+				text: '⭐ Starring our repository on ',
+                link: 'https://github.com/ubuntpunk/obsidian-xenquotes',
+                linkText: 'GitHub'
+			},
+			{
+				text: '💝 Funding development and unlocking features for the entire community via ',
+                link: 'https://buymeacoffee.com/ubuntupunk',
+                linkText: 'buymeacoffee.com'
+			},
+			{
+				text: '🤝 Joining our ',
+                link: 'https://github.com/ubuntupunk/obsidian-xenquotes/discussions',
+                linkText: 'community discussions on GitHub'
+			}
+		];
+
+		links.forEach(({ text, link, linkText }) => {
+			const li = bulletList.createEl('li');
+			li.createSpan({ text });
+			li.createEl('a', { text: linkText, href: link });
+		});
+		
 
 		new Setting(containerEl)
 			.setName('Quote Mode')
@@ -467,12 +495,19 @@ class XenQuotesSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		const attribution = document.createElement('div');
-		attribution.innerHTML = 'Inspirational quotes, images & historical data provided by <a href="https://zenquotes.io/" target="_blank">ZenQuotes API</a>';
-		attribution.style.marginTop = '20px';
-		attribution.style.fontSize = '0.9em';
-		attribution.style.color = '#555'; // Optional styling
-
+		const attribution = containerEl.createEl('div', { cls: 'xenquotes-attribution' });
+		attribution.createSpan({ text: 'Inspiration quotes, images & historical data provided by ' });
+		attribution.createEl('a', {
+			     text: 'ZenQuotes API',
+			     href: 'https://zenquotes.io/',
+			     attr: { target: '_blank' }
+			 });	
+		attribution.createSpan({ text: ' • Developed by ' });
+		attribution.createEl('a', {
+			     text: 'ubuntupunk',
+			     href: 'https://github.com/ubuntupunk',
+			     attr: { target: '_blank' }
+			  });	
 		containerEl.appendChild(attribution);
 	}
 }

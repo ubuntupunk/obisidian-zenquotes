@@ -25,3 +25,8 @@ If your plugin does not need CSS, delete this file.
 	color: var(--text-accent);
 	text-decoration: underline;
 }
+.xenquotes-attribution {
+	margin-top: 20px;
+	font-size: 0.9em;
+	color: var(--text-muted);
+}
