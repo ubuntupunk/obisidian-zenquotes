@@ -76,7 +76,7 @@ export default class XenQuotes extends Plugin {
 
 		// Add ribbon icon
 		if (this.settings.showRibbonIcon) {
-			this.ribbonIconEl = this.addRibbonIcon('dice', 'XenQuotes Plugin', async (evt: MouseEvent) => {
+			this.ribbonIconEl = this.addRibbonIcon('dice', 'XenQuotes plugin', async (evt: MouseEvent) => {
 				console.log('Ribbon icon clicked');
 				const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!activeLeaf) {
@@ -103,7 +103,7 @@ export default class XenQuotes extends Plugin {
 		// Add command
 		this.addCommand({
 			id: 'fetch-quote-of-the-day',
-			name: 'Fetch Quote of the Day',
+			name: 'Fetch quote of the day',
 			callback: async () => {
 				const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!activeLeaf) {
@@ -343,13 +343,13 @@ class XenQuotesSettingTab extends PluginSettingTab {
 		
 
 		new Setting(containerEl)
-			.setName('Quote Mode')
+			.setName('Quote mode')
 			.setDesc('Choose how you want to fetch quotes')
 			.addDropdown(dropdown => dropdown
-				.addOption('random', 'Random Quote')
-				.addOption('today', 'Quote of the Day')
-				.addOption('author', 'By Author (Coming Soon)')
-				.addOption('on-this-day', 'On This Day Quote')
+				.addOption('random', 'Random quote')
+				.addOption('today', 'Quote of the day')
+				.addOption('author', 'By author (coming soon)')
+				.addOption('on-this-day', 'On this day quote')
 				.setValue(this.plugin.settings.mySetting)
 				.onChange(async (value) => {
 					this.plugin.settings.mySetting = value;
@@ -357,7 +357,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Enable Random Image and Quote')
+			.setName('Enable random image and quote')
 			.setDesc('Toggle to fetch a random image along with the quote.')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableImageQuote)
@@ -367,10 +367,10 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Image Directory')
+			.setName('Image directory')
 			.setDesc('Directory to save images locally')
 			.addText(text => text
-				.setPlaceholder('./images')
+				.setPlaceholder('/Images')
 				.setValue(this.plugin.settings.imageDirectory)
 				.onChange(async (value) => {
 					this.plugin.settings.imageDirectory = value;
@@ -378,7 +378,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Save Images Locally')
+			.setName('Save images locally')
 			.setDesc('Toggle to save images locally')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.saveImagesLocally)
@@ -388,7 +388,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Enable On This Day Quotes')
+			.setName('Enable on this day quotes')
 			.setDesc('Fetch quotes from historical data based on the current date.')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableOnThisDay)
@@ -398,7 +398,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-            .setName('Custom Decade')
+            .setName('Custom decade')
             .setDesc('Enter a custom decade (0-9)')
             .addText(text => text
                 .setPlaceholder('Enter decade')
@@ -412,8 +412,8 @@ class XenQuotesSettingTab extends PluginSettingTab {
                 }));
 
 		new Setting(containerEl)
-            .setName('Custom Century')
-            .setDesc('Enter the century for On This Day quotes (e.g., 21 for 21st century)')
+            .setName('Custom century')
+            .setDesc('Enter the century for On ths day quotes (e.g., 21 for 21st century)')
             .addText(text => text
                 .setPlaceholder('Enter century')
                 .setValue(this.plugin.settings.selectedCentury.toString())
@@ -426,7 +426,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
                }));
 
 		new Setting(containerEl)
-			.setName('All Centuries')
+			.setName('All centuries')
 			.setDesc('Fetch quotes from all centuries')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.allCenturies)
@@ -436,7 +436,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('All Decades')
+			.setName('All decades')
 			.setDesc('Fetch quotes from all decades')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.allDecades)
