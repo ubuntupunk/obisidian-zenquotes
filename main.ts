@@ -101,24 +101,25 @@ export default class XenQuotes extends Plugin {
 		}
 
 		// Add command
-		this.addCommand({
-			id: 'fetch-quote-of-the-day',
-			name: 'Fetch quote of the day',
-			callback: async () => {
-				const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!activeLeaf) {
-					new Notice("No active note to insert quote into.");
-					return;
-				}
-				if (this.settings.enableImageQuote) {
-					await this.fetchRandomImageQuote(activeLeaf);
-				} else if (this.settings.enableOnThisDay) {
-					await this.fetchOnThisDayQuote(activeLeaf);
-				} else {
-					await this.fetchAndInsertQuote(activeLeaf);
-				}
-			}
-		});
+         this.addCommand({
+            id: 'fetch-quote-of-the-day',
+            name: 'Fetch quote of the day',
+            editorCallback: async (editor: Editor, view: MarkdownView) => {
+                if (!view) {
+                    new Notice("No active note to insert quote into.");
+                    return;
+               }
+                if (this.settings.enableImageQuote) {
+                    await this.fetchRandomImageQuote(view);
+               } else if (this.settings.enableOnThisDay) {
+                    await this.fetchOnThisDayQuote(view);
+               } else {
+                    await this.fetchAndInsertQuote(view);
+               }
+             }
+         });
+
+		
 
 		// Add settings tab
 		this.addSettingTab(new XenQuotesSettingTab(this.app, this));
