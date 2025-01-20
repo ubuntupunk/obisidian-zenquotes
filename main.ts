@@ -158,8 +158,8 @@ export default class XenQuotes extends Plugin {
 			});
 			
 			// Log all available properties
-			console.log("Response properties:", Object.keys(response));
-			console.log("Full response:", response);
+			//console.log("Response properties:", Object.keys(response));
+			//console.log("Full response:", response);
 
 			if (response.status === 200) {
 				if (this.settings.saveImagesLocally) {
@@ -292,12 +292,6 @@ export default class XenQuotes extends Plugin {
 		}
 	}
 
-	onunload() {
-		if (this.ribbonIconEl) {
-			this.ribbonIconEl.remove();
-		}
-	}
-
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
@@ -372,42 +366,6 @@ class XenQuotesSettingTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.mySetting = value;
 					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Show Ribbon Icon')
-			.setDesc('Toggle the visibility of the ribbon icon')
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.showRibbonIcon)
-				.onChange(async (value) => {
-					this.plugin.settings.showRibbonIcon = value;
-					await this.plugin.saveSettings();
-					if (value) {
-						if (!this.plugin.ribbonIconEl) {
-							this.plugin.ribbonIconEl = this.plugin.addRibbonIcon('dice', 'XenQuotes Plugin', async (evt: MouseEvent) => {
-								console.log('Ribbon icon clicked');
-								const activeLeaf = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
-								if (!activeLeaf) {
-									console.error('No active Markdown editor found.');
-									new Notice('No active note to insert quote into.');
-									return;
-								}
-								if (this.plugin.settings.enableImageQuote) {
-									await this.plugin.fetchRandomImageQuote(activeLeaf);
-								} else if (this.plugin.settings.enableOnThisDay) {
-									await this.plugin.fetchOnThisDayQuote(activeLeaf);
-								} else {
-									await this.plugin.fetchAndInsertQuote(activeLeaf);
-								}
-							});
-							this.plugin.ribbonIconEl.addClass('xenquotes-ribbon-class');
-						}
-					} else {
-						if (this.plugin.ribbonIconEl) {
-							this.plugin.ribbonIconEl.remove();
-							this.plugin.ribbonIconEl = null;
-						}
-					}
 				}));
 
 		new Setting(containerEl)
