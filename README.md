@@ -1,4 +1,4 @@
-# Obsidian XenQuotes Plugin
+# XenQuotes Plugin
 
 ## Project Overview
 This project is based on the Obsidian sample plugin for Obsidian. It has evolved into a simple plugin that provides users with a random quote of the day, inspirational images, and an "On This Day" feature to pull historical quotes based on the current date.
