@@ -1,5 +1,5 @@
 import { App, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, requestUrl } from 'obsidian';
-import { promises as fs } from 'fs'; // Import fs module
+//import { promises as fs } from 'fs'; // Import fs module
 
 interface XenQuotesSettings {
 	mySetting: string;
@@ -151,62 +151,51 @@ export default class XenQuotes extends Plugin {
 	}
 
 	async fetchRandomImageQuote(view: MarkdownView) {
-		try {
-			const response = await requestUrl({ 
-				url: "https://zenquotes.io/api/image", 
-				method: "GET"
-			});
-			
-			// Log all available properties
-			//console.log("Response properties:", Object.keys(response));
-			//console.log("Full response:", response);
+    try {
+        const response = await requestUrl({ 
+            url: "https://zenquotes.io/api/image", 
+            method: "GET"
+        });
 
-			if (response.status === 200) {
-				if (this.settings.saveImagesLocally) {
-					// Get the vault's base path and create an absolute path for the images directory
-					const basePath = this.app.vault.adapter.getBasePath();
-					const imageDir = `${basePath}/${this.settings.imageDirectory}`;
-					const imagePath = `${imageDir}/random-image.jpg`;
+        if (response.status === 200) {
+            if (this.settings.saveImagesLocally) {
+                const imageDir = this.settings.imageDirectory;
+                const imagePath = `${imageDir}/random-image.jpg`;
 
-					// Create the directory if it doesn't exist
-					try {
-						await fs.mkdir(imageDir, { recursive: true });
-					} catch (err) {
-						console.log("Directory already exists or creation failed:", err);
-					}
+                // Check if the directory exists
+                const dirExists = await this.app.vault.adapter.exists(imageDir);
+                if (!dirExists) {
+                    // Create the directory if it doesn't exist
+                    await this.app.vault.createFolder(imageDir);
+                }
 
-					// Try to write the binary data
-					try {
-						if (response.arrayBuffer) {
-							await fs.writeFile(imagePath, Buffer.from(response.arrayBuffer));
-							
-							// Use a relative path for the markdown link
-							const relativePath = `${this.settings.imageDirectory}/random-image.jpg`;
-							const quote = ""; // Placeholder for the quote
-							const quoteText = `## Daily Image\n\n![Random Image](${relativePath})\n\n ${quote}`;
-							view.editor.replaceRange(quoteText, view.editor.getCursor());
-							new Notice("Random image and quote inserted successfully!");
-						} else {
-							throw new Error("No binary data available in response");
-						}
-					} catch (error) {
-						console.error("Error saving image:", error);
-						new Notice("Failed to save the image.");
-					}
-				} else {
-					const quote = ""; // Placeholder for the quote
-					const quoteText = `## Daily Image & Quote\n\n![Random Image](${response.url})\n\n> ${quote}`;
-					view.editor.replaceRange(quoteText, view.editor.getCursor());
-					new Notice("Random image and quote inserted successfully!");
-				}
-			} else {
-				new Notice("Failed to fetch random image and quote.");
-			}
-		} catch (error) {
-			console.error("Error fetching random image and quote:", error);
-			new Notice("An error occurred while fetching the random image and quote.");
-		}
-	}
+                // Write the binary data
+                if (response.arrayBuffer) {
+                    await this.app.vault.createBinary(imagePath, Buffer.from(response.arrayBuffer));
+                    
+                    // Use a relative path for the markdown link
+                    const relativePath = `${this.settings.imageDirectory}/random-image.jpg`;
+                    const quote = ""; // Placeholder for the quote
+                    const quoteText = `## Daily Image\n\n![Random Image](${relativePath})\n\n ${quote}`;
+                    view.editor.replaceRange(quoteText, view.editor.getCursor());
+                    new Notice("Random image and quote inserted successfully!");
+                } else {
+                    throw new Error("No binary data available in response");
+                }
+            } else {
+                const quote = ""; // Placeholder for the quote
+                const quoteText = `## Daily Image & Quote\n\n![Random Image](${response.url})\n\n> ${quote}`;
+                view.editor.replaceRange(quoteText, view.editor.getCursor());
+                new Notice("Random image and quote inserted successfully!");
+            }
+        } else {
+            new Notice("Failed to fetch random image and quote.");
+        }
+    } catch (error) {
+        console.error("Error fetching random image and quote:", error);
+        new Notice("An error occurred while fetching the random image and quote.");
+    }
+}
 
 	async fetchOnThisDayQuote(view: MarkdownView) {
 		const today = new Date();
