@@ -85,16 +85,15 @@ export default class XenQuotes extends Plugin {
 					return;
 				}
 				if (this.settings.enableImageQuote) {
-					await this.fetchRandomImageQuote(activeLeaf);
-				} else if (this.settings.enableOnThisDay) {
-					await this.fetchOnThisDayQuote(activeLeaf);
-				} { else if (this.settings.enableQuoteOfTheDay) {
-					await this.fetchQuoteOfTheDay(activeLeaf);
-				}	
-				else {
-					await this.fetchAndInsertQuote(activeLeaf);
-				} 
-			});
+                    await this.fetchRandomImageQuote(activeLeaf);
+                } else if (this.settings.enableOnThisDay) {
+                    await this.fetchOnThisDayQuote(activeLeaf);
+                } else if (this.settings.enableQuoteOfTheDay) {
+                   await this.fetchQuoteOfTheDay(activeLeaf);
+               } else {
+                   await this.fetchAndInsertQuote(activeLeaf);
+               }
+            });
 
 			if (this.ribbonIconEl) {
 				this.ribbonIconEl.addClass('xenquotes-ribbon-class');
