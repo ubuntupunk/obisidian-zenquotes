@@ -88,9 +88,12 @@ export default class XenQuotes extends Plugin {
 					await this.fetchRandomImageQuote(activeLeaf);
 				} else if (this.settings.enableOnThisDay) {
 					await this.fetchOnThisDayQuote(activeLeaf);
-				} else {
+				} { else if (this.settings.enableQuoteOfTheDay) {
+					await this.fetchQuoteOfTheDay(activeLeaf);
+				}	
+				else {
 					await this.fetchAndInsertQuote(activeLeaf);
-				}
+				} 
 			});
 
 			if (this.ribbonIconEl) {
