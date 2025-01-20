@@ -304,7 +304,7 @@ class XenQuotesSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		const announcementEl = containerEl.createDiv('announcement');
+		const announcementEl = containerEl.createDiv();
 		announcementEl.addClass('announcement');
 
 		const messageEl = announcementEl.createEl('p');
