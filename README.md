@@ -30,6 +30,13 @@ To help make the author-specific quotes feature available to everyone, please co
 2. Place the plugin folder in your Obsidian plugins directory: `YOUR_OBSIDIAN_VAULT/.obsidian/plugins/`.
 3. Open Obsidian and enable the plugin from the settings.
 
+## Development Instructions
+
+1. `deno install` or `npm install`
+2. `deno run dev` or `npm run dev`
+3. Open Obsidian and enable the plugin from the settings.
+
+
 ## Usage Instructions
 
 - To fetch a random quote, use the command palette or the ribbon icon.
